@@ -1,7 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:quizpancasila/common/converters.dart';
 
 import 'package:quizpancasila/domain/entities/question_option.dart';
 
+part 'question.g.dart';
+
+@JsonSerializable()
+@QuestionOptionConverter()
 class Question extends Equatable {
   final String id;
   final String question;
@@ -28,6 +34,11 @@ class Question extends Equatable {
       tags: tags ?? this.tags,
     );
   }
+
+  factory Question.fromJson(Map<String, dynamic> json) =>
+      _$QuestionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestionToJson(this);
 
   @override
   List<Object?> get props => [

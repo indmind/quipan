@@ -1,8 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'question_option.g.dart';
+
+@JsonSerializable()
 class QuestionOption extends Equatable {
   final String id;
   final String value;
+  @JsonKey(name: 'is_correct')
   final bool isCorrect;
 
   const QuestionOption({
@@ -10,6 +15,11 @@ class QuestionOption extends Equatable {
     required this.value,
     required this.isCorrect,
   });
+
+  factory QuestionOption.fromJson(Map<String, dynamic> json) =>
+      _$QuestionOptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestionOptionToJson(this);
 
   @override
   List<Object?> get props => [
