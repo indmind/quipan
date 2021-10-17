@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:quizpancasila/domain/entities/quiz_room.dart';
+import 'package:quizpancasila/domain/entities/room.dart';
 
 class QuizRoomItem extends StatelessWidget {
-  final QuizRoom quizRoom;
+  final Room quizRoom;
   final void Function()? onTap;
 
   const QuizRoomItem({

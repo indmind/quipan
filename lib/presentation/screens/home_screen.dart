@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:quizpancasila/domain/entities/quiz_room.dart';
+import 'package:quizpancasila/domain/entities/room.dart';
 import 'package:quizpancasila/presentation/controllers/auth_controller.dart';
 import 'package:quizpancasila/presentation/screens/lobby_screen.dart';
 import 'package:quizpancasila/presentation/widgets/quiz_room_item.dart';
@@ -12,7 +12,7 @@ class HomeScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quizRooms = QuizRoom.fakeData;
+    final quizRooms = Room.fakeData;
     final user = useProvider(authControllerProvider);
     final displayNameController = useTextEditingController(text: user?.name);
 
