@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class User {
   final String uid;
@@ -29,6 +30,15 @@ class User {
     return User(
       uid: map['uid'],
       name: map['name'],
+    );
+  }
+
+  static User? fromFirebase(auth.User? user) {
+    if (user == null) return null;
+
+    return User(
+      uid: user.uid,
+      name: user.displayName ?? 'Anonymous',
     );
   }
 
