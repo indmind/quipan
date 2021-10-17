@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:quizpancasila/common/exception.dart';
 import 'package:quizpancasila/domain/entities/user.dart';
@@ -6,8 +7,9 @@ import 'package:username_gen/username_gen.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final auth.FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore;
 
-  AuthRepositoryImpl(this._firebaseAuth);
+  AuthRepositoryImpl(this._firebaseAuth, this._firestore);
 
   @override
   Stream<User?> get onAuthStateChanged =>
@@ -26,6 +28,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> updateDisplayName(String displayName) async {
     try {
       await _firebaseAuth.currentUser?.updateDisplayName(displayName);
+      await _updateFirestore();
     } on auth.FirebaseAuthException catch (e) {
       throw AuthException(message: e.message ?? 'Unknown error');
     }
@@ -38,8 +41,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
       final user = _firebaseAuth.currentUser;
 
+      // check for new user
       if (user != null && user.displayName == null) {
         await user.updateDisplayName(UsernameGen().generate());
+        await _updateFirestore();
       }
     } on auth.FirebaseAuthException catch (e) {
       throw AuthException(message: e.message ?? 'Unknown error');
@@ -53,6 +58,17 @@ class AuthRepositoryImpl implements AuthRepository {
       await signInAnonymously();
     } on auth.FirebaseAuthException catch (e) {
       throw AuthException(message: e.message ?? 'Unknown error');
+    }
+  }
+
+  Future<void> _updateFirestore() async {
+    final user = _firebaseAuth.currentUser;
+
+    if (user != null) {
+      await _firestore.collection('users').doc(user.uid).set(
+            User.fromFirebase(user)!.toMap(),
+            SetOptions(merge: true),
+          );
     }
   }
 }
