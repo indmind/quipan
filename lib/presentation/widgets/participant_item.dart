@@ -3,10 +3,12 @@ import 'package:quizpancasila/domain/entities/user.dart';
 
 class ParticipantItem extends StatelessWidget {
   final User participant;
+  final bool isHost;
 
   const ParticipantItem({
     Key? key,
     required this.participant,
+    this.isHost = false,
   }) : super(key: key);
 
   @override
@@ -15,7 +17,7 @@ class ParticipantItem extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isHost ? Colors.green : Colors.white,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(participant.name),

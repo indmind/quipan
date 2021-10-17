@@ -4,23 +4,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quizpancasila/data/repositories/repository_providers.dart';
 import 'package:quizpancasila/domain/entities/user.dart';
 import 'package:quizpancasila/domain/repositories/auth_repository.dart';
+import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, User?>((ref) {
-  final authRepository = ref.read(authRepositoryProvider);
-
-  return AuthController(authRepository)..signInAnonymously();
+  return AuthController(ref.read)..signInAnonymously();
 });
 
 class AuthController extends StateNotifier<User?> {
-  final AuthRepository _repository;
+  final Reader _read;
+
+  late final AuthRepository _repository;
 
   StreamSubscription<User?>? _subscription;
 
-  AuthController(this._repository) : super(null) {
+  AuthController(this._read) : super(null) {
+    _repository = _read(authRepositoryProvider);
+
     _subscription?.cancel();
-    _subscription =
-        _repository.onAuthStateChanged.listen((user) => state = user);
+    _subscription = _repository.onAuthStateChanged.listen((user) {
+      state = user;
+
+      // check if users is already in room
+      _read(lobbyControllerProvider.notifier).fetchActiveRoom();
+    });
   }
 
   @override

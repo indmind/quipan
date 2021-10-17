@@ -6,23 +6,17 @@ import 'package:dartz/dartz.dart';
 import 'package:quizpancasila/common/failure.dart';
 import 'package:quizpancasila/domain/entities/question.dart';
 import 'package:quizpancasila/domain/repositories/question_repository.dart';
+import 'package:quizpancasila/common/references.dart';
 
 class QuestionRepositoryImpl extends QuestionRepository {
   final FirebaseFirestore _firestore;
 
   QuestionRepositoryImpl(this._firestore);
 
-  CollectionReference<Question> get _ref =>
-      _firestore.collection('questions').withConverter<Question>(
-            fromFirestore: (snapshot, options) =>
-                Question.fromJson(snapshot.data()!..['id'] = snapshot.id),
-            toFirestore: (value, options) => value.toJson()..remove('id'),
-          );
-
   @override
   Future<Either<Failure, Question>> getQuestion(String questionId) async {
     try {
-      final doc = await _ref.doc(questionId).get();
+      final doc = await _firestore.questions.doc(questionId).get();
       return Right(doc.data()!);
     } catch (e) {
       return Left(DatabaseFailure(e.toString()));
@@ -32,7 +26,7 @@ class QuestionRepositoryImpl extends QuestionRepository {
   @override
   Future<Either<Failure, List<Question>>> getQuestions() async {
     try {
-      final result = await _ref.get();
+      final result = await _firestore.questions.get();
 
       return Right(result.docs.map((doc) => doc.data()).toList());
     } catch (e) {

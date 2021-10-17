@@ -8,6 +8,7 @@ import 'package:quizpancasila/domain/entities/room.dart';
 import 'package:quizpancasila/domain/repositories/question_repository.dart';
 import 'package:quizpancasila/domain/repositories/room_repository.dart';
 import 'package:quizpancasila/presentation/controllers/auth_controller.dart';
+import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
 
 final roomControllerProvider = ChangeNotifierProvider<RoomController>((ref) {
   return RoomController(ref.read)..fetchOpenRooms();
@@ -70,9 +71,19 @@ class RoomController extends ChangeNotifier {
       return;
     }
 
-    await roomRepository.createRoom(
+    final result = await roomRepository.createRoom(
       hostUID: user.uid,
       questionIDs: questions.getOrElse(() => []).map((q) => q.id).toList(),
+    );
+
+    result.fold(
+      (failure) {
+        _message = failure.message;
+        notifyListeners();
+      },
+      (room) {
+        _read(lobbyControllerProvider).setActiveRoom(room);
+      },
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:quizpancasila/common/exception.dart';
 import 'package:quizpancasila/domain/entities/user.dart';
 import 'package:quizpancasila/domain/repositories/auth_repository.dart';
 import 'package:username_gen/username_gen.dart';
-
+import 'package:quizpancasila/common/references.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final auth.FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
@@ -65,8 +65,8 @@ class AuthRepositoryImpl implements AuthRepository {
     final user = _firebaseAuth.currentUser;
 
     if (user != null) {
-      await _firestore.collection('users').doc(user.uid).set(
-            User.fromFirebase(user)!.toMap(),
+      await _firestore.users.doc(user.uid).set(
+            User.fromFirebase(user)!,
             SetOptions(merge: true),
           );
     }

@@ -1,6 +1,9 @@
-import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:json_annotation/json_annotation.dart';
 
+part 'user.g.dart';
+
+@JsonSerializable()
 class User {
   final String uid;
   final String name;
@@ -19,18 +22,9 @@ class User {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-    };
-  }
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
-      uid: map['uid'],
-      name: map['name'],
-    );
-  }
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
   static User? fromFirebase(auth.User? user) {
     if (user == null) return null;
@@ -40,10 +34,6 @@ class User {
       name: user.displayName ?? 'Anonymous',
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory User.fromJson(String source) => User.fromMap(json.decode(source));
 
   @override
   String toString() => 'User(uid: $uid, name: $name)';
