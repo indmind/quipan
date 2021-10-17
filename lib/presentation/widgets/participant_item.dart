@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quizpancasila/data/models/quiz_room.dart';
-import 'package:quizpancasila/data/models/user.dart';
+import 'package:quizpancasila/domain/entities/user.dart';
 
 class ParticipantItem extends StatelessWidget {
   final User participant;

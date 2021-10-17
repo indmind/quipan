@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quizpancasila/data/models/quiz_room.dart';
-import 'package:quizpancasila/data/models/user.dart';
-import 'package:quizpancasila/ui/screens/quiz_scrreen.dart';
-import 'package:quizpancasila/ui/widgets/participant_item.dart';
+import 'package:quizpancasila/domain/entities/user.dart';
+import 'package:quizpancasila/presentation/screens/quiz_scrreen.dart';
+import 'package:quizpancasila/presentation/widgets/participant_item.dart';
 
 class LobbyScreen extends StatelessWidget {
   const LobbyScreen({Key? key}) : super(key: key);

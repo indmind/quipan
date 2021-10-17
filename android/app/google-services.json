@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "545596588068",
+    "project_id": "quiz-pancasila",
+    "storage_bucket": "quiz-pancasila.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545596588068:android:b1f58b7cca388a98de98b1",
+        "android_client_info": {
+          "package_name": "com.example.quizpancasila"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "545596588068-lg9dslppdlg5et9hnlom23otbhncts94.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfkq8bfQIPJ428LQWtIDIcURYlrSzsE-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "545596588068-lg9dslppdlg5et9hnlom23otbhncts94.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

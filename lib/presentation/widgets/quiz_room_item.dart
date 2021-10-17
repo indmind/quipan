@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quizpancasila/data/models/quiz_room.dart';
+import 'package:quizpancasila/domain/entities/quiz_room.dart';
 
 class QuizRoomItem extends StatelessWidget {
   final QuizRoom quizRoom;
