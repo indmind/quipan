@@ -64,7 +64,12 @@ class LobbyScreen extends HookWidget {
                         Text(room?.name ?? '-'),
                         ElevatedButton(
                           onPressed: () {
-                            leaveRoom();
+                            if (controller.isHost) {
+                              leaveRoom();
+                            } else {
+                              // bypass snackbar
+                              controller.leaveRoom();
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             primary: controller.isHost ? Colors.red : null,

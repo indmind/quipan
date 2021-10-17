@@ -34,17 +34,30 @@ class HomeScreen extends HookWidget {
         body: SafeArea(
           child: Column(
             children: [
-              TextField(
-                controller: displayNameController,
-                decoration: const InputDecoration(
-                  hintText: 'Username',
-                ),
-                onChanged: (value) {
-                  final controller =
-                      context.read(authControllerProvider.notifier);
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: displayNameController,
+                        decoration: const InputDecoration(
+                          hintText: 'Username',
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        final controller =
+                            context.read(authControllerProvider.notifier);
 
-                  controller.updateDisplayName(value);
-                },
+                        controller
+                            .updateDisplayName(displayNameController.text);
+                      },
+                      icon: const Icon(Icons.save),
+                    ),
+                  ],
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
