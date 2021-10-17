@@ -19,20 +19,28 @@ class LobbyScreen extends HookWidget {
     final room = controller.joinedRoom;
     final participants = controller.joinedRoomPlayers;
 
+    leaveRoom() {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            controller.isHost
+                ? 'You are a host, do you want to close this room?'
+                : 'Do you want to leave the room?',
+          ),
+          action: SnackBarAction(
+            label: controller.isHost ? 'Close' : 'Leave',
+            onPressed: () {
+              controller.leaveRoom();
+            },
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Do you want to leave the room?'),
-              action: SnackBarAction(
-                label: 'Leave',
-                onPressed: () {
-                  controller.leaveRoom();
-                },
-              ),
-            ),
-          );
+          leaveRoom();
 
           return false;
         },
@@ -56,23 +64,7 @@ class LobbyScreen extends HookWidget {
                         Text(room?.name ?? '-'),
                         ElevatedButton(
                           onPressed: () {
-                            if (controller.isHost) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: const Text(
-                                    'You are a host, do you want to close this room?',
-                                  ),
-                                  action: SnackBarAction(
-                                    label: 'Close',
-                                    onPressed: () {
-                                      controller.leaveRoom();
-                                    },
-                                  ),
-                                ),
-                              );
-                            } else {
-                              controller.leaveRoom();
-                            }
+                            leaveRoom();
                           },
                           style: ElevatedButton.styleFrom(
                             primary: controller.isHost ? Colors.red : null,
