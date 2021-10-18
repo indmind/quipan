@@ -39,26 +39,33 @@ class QuizScreen extends HookWidget {
             Get.off(() => const HomeScreen());
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Text(question?.question ?? 'Loading...'),
-              const SizedBox(height: 16),
-              ListView.builder(
-                itemCount: question?.options.length ?? 0,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final option = question!.options[index];
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  question?.question ?? 'Loading...',
+                  style: Get.theme.textTheme.headline3,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ListView.builder(
+                  itemCount: question?.options.length ?? 0,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final option = question!.options[index];
 
-                  return ListTile(
-                    title: Text(option.value),
-                    // onTap: () => controller.answer(option.id),
-                  );
-                },
-              )
-            ],
+                    return ListTile(
+                      title: Text(option.value),
+                      // onTap: () => controller.answer(option.id),
+                    );
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),

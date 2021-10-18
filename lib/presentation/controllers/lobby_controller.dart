@@ -56,6 +56,9 @@ class LobbyController extends ChangeNotifier {
           fetchPlayers();
           break;
         case RoomStatus.countingDown:
+          _joinedRoom = room;
+          notifyListeners();
+
           fetchQuestions();
           break;
         case RoomStatus.inProgress:
@@ -91,6 +94,9 @@ class LobbyController extends ChangeNotifier {
       _message = 'You are not logged in';
       notifyListeners();
       return;
+    } else {
+      _message = null;
+      notifyListeners();
     }
 
     final room = await roomRepository.getActiveRoom(user.uid);
@@ -242,6 +248,10 @@ class LobbyController extends ChangeNotifier {
       return;
     }
 
+    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+      return;
+    }
+
     final result = await roomRepository.startRoomCountdown(joinedRoom!.id);
 
     result.fold(
@@ -262,6 +272,10 @@ class LobbyController extends ChangeNotifier {
     if (joinedRoom == null) {
       _message = 'You are not in a room';
       notifyListeners();
+      return;
+    }
+
+    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
       return;
     }
 
