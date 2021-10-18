@@ -48,7 +48,7 @@ class LobbyController extends ChangeNotifier {
     if (joinedRoom == null) return;
 
     _roomSubscription =
-        roomRepository.onRoomChanged(joinedRoom!.id).listen((room) {
+        roomRepository.onRoomChanged(joinedRoom!.id).listen((room) async {
       final status = room?.status;
 
       switch (status) {
@@ -62,7 +62,10 @@ class LobbyController extends ChangeNotifier {
           fetchQuestions();
           break;
         case RoomStatus.inProgress:
-          if (questions.isEmpty) fetchQuestions();
+          _joinedRoom = room;
+          if (questions.isEmpty) await fetchQuestions();
+
+          notifyListeners();
           break;
         case RoomStatus.ended:
         default:
