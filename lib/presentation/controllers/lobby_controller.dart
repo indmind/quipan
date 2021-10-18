@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quizpancasila/data/repositories/repository_providers.dart';
+import 'package:quizpancasila/domain/entities/question.dart';
 import 'package:quizpancasila/domain/entities/room.dart';
 import 'package:quizpancasila/domain/entities/user.dart';
 
@@ -31,6 +32,9 @@ class LobbyController extends ChangeNotifier {
   final List<User> _joinedRoomPlayers = [];
   List<User> get joinedRoomPlayers => _joinedRoomPlayers;
 
+  final List<Question> _questions = [];
+  List<Question> get questions => _questions;
+
   String? _message;
   String? get message => _message;
 
@@ -45,10 +49,22 @@ class LobbyController extends ChangeNotifier {
 
     _roomSubscription =
         roomRepository.onRoomChanged(joinedRoom!.id).listen((room) {
-      if (room?.status == RoomStatus.open) {
-        fetchActiveRoomPlayers();
-      } else {
-        setActiveRoom(null);
+      final status = room?.status;
+
+      switch (status) {
+        case RoomStatus.open:
+          fetchPlayers();
+          break;
+        case RoomStatus.countingDown:
+          fetchQuestions();
+          break;
+        case RoomStatus.inProgress:
+          if (questions.isEmpty) fetchQuestions();
+          break;
+        case RoomStatus.ended:
+        default:
+          setActiveRoom(null);
+          break;
       }
     });
   }
@@ -63,7 +79,9 @@ class LobbyController extends ChangeNotifier {
     _joinedRoom = room;
     notifyListeners();
 
-    await subscribeToJoinedRoom();
+    if (room != null) {
+      await subscribeToJoinedRoom();
+    }
   }
 
   Future<void> fetchActiveRoom() async {
@@ -173,7 +191,7 @@ class LobbyController extends ChangeNotifier {
     );
   }
 
-  Future<void> fetchActiveRoomPlayers() async {
+  Future<void> fetchPlayers() async {
     if (joinedRoom == null) {
       _joinedRoomPlayers.clear();
       notifyListeners();
@@ -190,6 +208,72 @@ class LobbyController extends ChangeNotifier {
       (players) {
         _joinedRoomPlayers.clear();
         _joinedRoomPlayers.addAll(players);
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> fetchQuestions() async {
+    if (joinedRoom == null) {
+      _questions.clear();
+      notifyListeners();
+      return;
+    }
+
+    final result = await roomRepository.getRoomQuestions(joinedRoom!.id);
+
+    result.fold(
+      (failure) {
+        _message = failure.message;
+        notifyListeners();
+      },
+      (questions) {
+        _questions.clear();
+        _questions.addAll(questions);
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> startCountdown() async {
+    if (joinedRoom == null) {
+      _message = 'You are not in a room';
+      notifyListeners();
+      return;
+    }
+
+    final result = await roomRepository.startRoomCountdown(joinedRoom!.id);
+
+    result.fold(
+      (failure) {
+        _message = failure.message;
+        notifyListeners();
+      },
+      (room) {
+        _joinedRoom = room;
+        notifyListeners();
+
+        fetchQuestions();
+      },
+    );
+  }
+
+  Future<void> startQuiz() async {
+    if (joinedRoom == null) {
+      _message = 'You are not in a room';
+      notifyListeners();
+      return;
+    }
+
+    final result = await roomRepository.startRoomQuiz(joinedRoom!.id);
+
+    result.fold(
+      (failure) {
+        _message = failure.message;
+        notifyListeners();
+      },
+      (room) {
+        _joinedRoom = room;
         notifyListeners();
       },
     );

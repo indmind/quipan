@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:quizpancasila/common/failure.dart';
+import 'package:quizpancasila/domain/entities/question.dart';
 import 'package:quizpancasila/domain/entities/room.dart';
 import 'package:quizpancasila/domain/entities/user.dart';
 
@@ -30,9 +31,13 @@ abstract class RoomRepository {
     required String roomID,
   });
 
+  Future<Either<Failure, Room>> startRoomCountdown(String roomID);
+  Future<Either<Failure, Room>> startRoomQuiz(String roomID);
+
   Future<Either<Failure, Room>> deleteRoom(String roomID);
 
   Future<Either<Failure, Room?>> getActiveRoom(String userUID);
 
   Future<Either<Failure, List<User>>> getRoomPlayers(String roomID);
+  Future<Either<Failure, List<Question>>> getRoomQuestions(String roomID);
 }

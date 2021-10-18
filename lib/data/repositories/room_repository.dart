@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quizpancasila/domain/entities/question.dart';
 import 'package:quizpancasila/domain/entities/room.dart';
 import 'package:quizpancasila/common/failure.dart';
 import 'package:dartz/dartz.dart';
@@ -14,6 +15,7 @@ class RoomRepositoryImpl implements RoomRepository {
   @override
   Stream<List<Room>> onOpenRoomsChanged() {
     return _firestore.rooms
+        .where('status', isEqualTo: 'open')
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
@@ -67,7 +69,7 @@ class RoomRepositoryImpl implements RoomRepository {
     }
   }
 
-   @override
+  @override
   Future<Either<Failure, Room>> updateRoomName({
     required String roomID,
     required String roomName,
@@ -166,7 +168,7 @@ class RoomRepositoryImpl implements RoomRepository {
     try {
       final snapshot = await _firestore.rooms
           .where('playerUIDs', arrayContains: userUID)
-          .where('status', isEqualTo: 'open')
+          .where('status', isNotEqualTo: 'closed')
           .get();
 
       if (snapshot.docs.isNotEmpty) {
@@ -192,6 +194,76 @@ class RoomRepositoryImpl implements RoomRepository {
             .get();
 
         return Right(userSnapshot.docs.map((doc) => doc.data()).toList());
+      } else {
+        return Left(DatabaseFailure('Room Not Found'));
+      }
+    } on FirebaseException catch (e) {
+      return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Question>>> getRoomQuestions(
+      String roomID) async {
+    try {
+      final snapshot = await _firestore.rooms.doc(roomID).get();
+
+      if (snapshot.exists) {
+        final room = snapshot.data()!;
+
+        final questionSnapshot = await _firestore.questions
+            .where(FieldPath.documentId, whereIn: room.questionIds)
+            .get();
+
+        return Right(questionSnapshot.docs.map((doc) => doc.data()).toList());
+      } else {
+        return Left(DatabaseFailure('Room Not Found'));
+      }
+    } on FirebaseException catch (e) {
+      return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Room>> startRoomCountdown(String roomID) async {
+    try {
+      final doc = await _firestore.rooms.doc(roomID).get();
+
+      if (doc.exists) {
+        await doc.reference.update({
+          'status': 'counting_down',
+          'currentQuestionIndex': 0,
+        });
+
+        return Right(doc.data()!.copyWith(
+              status: RoomStatus.countingDown,
+              currentQuestionIndex: 0,
+            ));
+      } else {
+        return Left(DatabaseFailure('Room Not Found'));
+      }
+    } on FirebaseException catch (e) {
+      return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Room>> startRoomQuiz(String roomID) async {
+    try {
+      final doc = await _firestore.rooms.doc(roomID).get();
+
+      if (doc.exists) {
+        await doc.reference.update({
+          'status': 'in_progress',
+          'startedAt': FieldValue.serverTimestamp(),
+        });
+
+        return Right(
+          doc.data()!.copyWith(
+                status: RoomStatus.inProgress,
+                startedAt: Timestamp.now(),
+              ),
+        );
       } else {
         return Left(DatabaseFailure('Room Not Found'));
       }

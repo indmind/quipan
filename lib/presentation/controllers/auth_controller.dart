@@ -5,6 +5,7 @@ import 'package:quizpancasila/data/repositories/repository_providers.dart';
 import 'package:quizpancasila/domain/entities/user.dart';
 import 'package:quizpancasila/domain/repositories/auth_repository.dart';
 import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
+import 'package:quizpancasila/presentation/controllers/room_controller.dart';
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, User?>((ref) {
@@ -24,9 +25,10 @@ class AuthController extends StateNotifier<User?> {
     _subscription?.cancel();
     _subscription = _repository.onAuthStateChanged.listen((user) {
       state = user;
-
+      
       // check if users is already in room
       _read(lobbyControllerProvider.notifier).fetchActiveRoom();
+      _read(roomControllerProvider.notifier).fetchOpenRooms();
     });
   }
 

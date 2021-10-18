@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:quizpancasila/domain/entities/room.dart';
 import 'package:quizpancasila/presentation/controllers/auth_controller.dart';
 import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
+import 'package:quizpancasila/presentation/screens/countdown_screen.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
 import 'package:quizpancasila/presentation/screens/quiz_screen.dart';
 import 'package:quizpancasila/presentation/widgets/participant_item.dart';
@@ -23,7 +25,11 @@ class LobbyScreen extends HookWidget {
       text: room?.name ?? '',
     );
 
-    leaveRoom() {
+    useEffect(() {
+      Future.microtask(() => checkRoomStatus(controller));
+    }, []);
+
+    confirmLeaveRoom() {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -44,16 +50,14 @@ class LobbyScreen extends HookWidget {
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
-          leaveRoom();
+          confirmLeaveRoom();
 
           return false;
         },
         child: ProviderListener<LobbyController>(
           provider: lobbyControllerProvider,
           onChange: (context, value) {
-            if (value.joinedRoom == null) {
-              Get.off(() => const HomeScreen());
-            }
+            checkRoomStatus(value);
           },
           child: SafeArea(
             child: SizedBox(
@@ -86,7 +90,7 @@ class LobbyScreen extends HookWidget {
                         ElevatedButton(
                           onPressed: () {
                             if (controller.isHost) {
-                              leaveRoom();
+                              confirmLeaveRoom();
                             } else {
                               // bypass snackbar
                               controller.leaveRoom();
@@ -125,7 +129,7 @@ class LobbyScreen extends HookWidget {
                         height: Get.height * 0.1,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.to(() => const QuizScreen());
+                            controller.startCountdown();
                           },
                           child: const Text('Start'),
                         ),
@@ -138,5 +142,15 @@ class LobbyScreen extends HookWidget {
         ),
       ),
     );
+  }
+
+  void checkRoomStatus(LobbyController value) {
+    if (value.joinedRoom == null) {
+      Get.off(() => const HomeScreen());
+    } else if (value.joinedRoom!.status == RoomStatus.countingDown) {
+      Get.off(() => const CountdownScreen());
+    } else if (value.joinedRoom!.status == RoomStatus.inProgress) {
+      Get.off(() => const QuizScreen());
+    }
   }
 }

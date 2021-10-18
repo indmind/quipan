@@ -18,6 +18,7 @@ class HomeScreen extends HookWidget {
         useTextEditingController(text: authController?.name);
 
     final roomController = useProvider(roomControllerProvider);
+    final lobbyController = useProvider(lobbyControllerProvider);
 
     useEffect(() {
       displayNameController.text = authController?.name ?? '';
@@ -75,6 +76,8 @@ class HomeScreen extends HookWidget {
                 },
                 child: const Text('Create Room'),
               ),
+              if (lobbyController.message != null)
+                Text(lobbyController.message!),
               if (roomController.message != null) Text(roomController.message!),
               if (roomController.openRooms.isEmpty)
                 Text('No active rooms'.tr)
