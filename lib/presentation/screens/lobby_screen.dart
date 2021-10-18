@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quizpancasila/presentation/controllers/auth_controller.dart';
 import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
-import 'package:quizpancasila/presentation/screens/quiz_scrreen.dart';
+import 'package:quizpancasila/presentation/screens/quiz_screen.dart';
 import 'package:quizpancasila/presentation/widgets/participant_item.dart';
 
 class LobbyScreen extends HookWidget {

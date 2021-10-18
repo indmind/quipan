@@ -16,6 +16,7 @@ Room _$RoomFromJson(Map<String, dynamic> json) => Room(
       questionIds: (json['questionIds'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      currentQuestionIndex: json['currentQuestionIndex'] as int,
       status: $enumDecode(_$RoomStatusEnumMap, json['status']),
       createdAt:
           const TimestampConverter().fromJson(json['createdAt'] as Timestamp),
@@ -31,6 +32,7 @@ Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
       'hostUID': instance.hostUID,
       'playerUIDs': instance.playerUIDs,
       'questionIds': instance.questionIds,
+      'currentQuestionIndex': instance.currentQuestionIndex,
       'status': _$RoomStatusEnumMap[instance.status],
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
       'startedAt':
@@ -40,6 +42,7 @@ Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
 
 const _$RoomStatusEnumMap = {
   RoomStatus.open: 'open',
-  RoomStatus.ended: 'closed',
+  RoomStatus.countingDown: 'counting_down',
   RoomStatus.inProgress: 'in_progress',
+  RoomStatus.ended: 'ended',
 };

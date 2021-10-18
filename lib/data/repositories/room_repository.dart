@@ -53,6 +53,7 @@ class RoomRepositoryImpl implements RoomRepository {
         hostUID: hostUID,
         name: roomName,
         questionIds: questionIDs,
+        currentQuestionIndex: 0,
         status: RoomStatus.open,
         createdAt: Timestamp.now(),
         playerUIDs: [hostUID],
