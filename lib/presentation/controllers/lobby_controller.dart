@@ -88,41 +88,35 @@ class LobbyController extends ChangeNotifier {
     );
   }
 
-  Future<void> createRoom() async {
+  Future<void> updateRoomName(String name) async {
     final user = _read(authControllerProvider);
 
     if (user == null) {
-      _message = 'You must be logged in to create a room';
+      _message = 'You are not logged in';
+      notifyListeners();
+      return;
+    } else if (joinedRoom == null) {
+      _message = 'You are not in a room';
+      notifyListeners();
+      return;
+    } else if (joinedRoom!.hostUID != user.uid) {
+      _message = 'You are not the host of this room';
       notifyListeners();
       return;
     }
 
-    // grab 5 random questions
-    final questions = await questionRepository.getRandomQuestions(5);
-
-    if (questions.isLeft()) {
-      questions.leftMap((failure) {
-        _message = failure.message;
-
-        notifyListeners();
-      });
-
-      return;
-    }
-
-    final result = await roomRepository.createRoom(
-      hostUID: user.uid,
-      questionIDs: questions.getOrElse(() => []).map((q) => q.id).toList(),
+    final room = await roomRepository.updateRoomName(
+      roomID: joinedRoom!.id,
+      roomName: name,
     );
 
-    result.fold(
-      (failure) {
-        _message = failure.message;
+    room.fold(
+      (error) {
+        _message = error.message;
         notifyListeners();
       },
       (room) {
-        _joinedRoom = room;
-        notifyListeners();
+        // setActiveRoom(room);
       },
     );
   }

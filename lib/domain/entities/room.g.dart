@@ -40,6 +40,6 @@ Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
 
 const _$RoomStatusEnumMap = {
   RoomStatus.open: 'open',
-  RoomStatus.closed: 'closed',
+  RoomStatus.ended: 'closed',
   RoomStatus.inProgress: 'in_progress',
 };

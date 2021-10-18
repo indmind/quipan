@@ -15,6 +15,11 @@ abstract class RoomRepository {
     String? roomName,
   });
 
+  Future<Either<Failure, Room>> updateRoomName({
+    required String roomID,
+    required String roomName,
+  });
+
   Future<Either<Failure, Room>> joinRoom({
     required String userUID,
     required String roomID,

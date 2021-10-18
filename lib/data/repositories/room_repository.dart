@@ -66,6 +66,26 @@ class RoomRepositoryImpl implements RoomRepository {
     }
   }
 
+   @override
+  Future<Either<Failure, Room>> updateRoomName({
+    required String roomID,
+    required String roomName,
+  }) async {
+    try {
+      final doc = await _firestore.rooms.doc(roomID).get();
+
+      if (doc.exists) {
+        await doc.reference.update({'name': roomName});
+
+        return Right(doc.data()!);
+      } else {
+        return Left(DatabaseFailure('Room Not Found'));
+      }
+    } on FirebaseException catch (e) {
+      return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
+    }
+  }
+
   @override
   Future<Either<Failure, Room>> deleteRoom(String roomID) async {
     try {

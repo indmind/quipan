@@ -19,6 +19,10 @@ class LobbyScreen extends HookWidget {
     final room = controller.joinedRoom;
     final participants = controller.joinedRoomPlayers;
 
+    final roomNameController = useTextEditingController(
+      text: room?.name ?? '',
+    );
+
     leaveRoom() {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -61,7 +65,24 @@ class LobbyScreen extends HookWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(room?.name ?? '-'),
+                        if (user?.uid == room?.hostUID)
+                          Expanded(
+                            child: TextField(
+                              controller: roomNameController,
+                              decoration: const InputDecoration(
+                                hintText: 'Room name',
+                              ),
+                              textInputAction: TextInputAction.done,
+                              onSubmitted: (_) {
+                                if (roomNameController.text.isNotEmpty) {
+                                  controller
+                                      .updateRoomName(roomNameController.text);
+                                }
+                              },
+                            ),
+                          )
+                        else
+                          Text(room?.name ?? '-'),
                         ElevatedButton(
                           onPressed: () {
                             if (controller.isHost) {
@@ -87,7 +108,11 @@ class LobbyScreen extends HookWidget {
                               .map(
                                 (participant) => ParticipantItem(
                                   participant: participant,
-                                  isHost: participant.uid == room?.hostUID,
+                                  bgColor: participant.uid == room?.hostUID
+                                      ? Colors.green
+                                      : participant.uid == user?.uid
+                                          ? Colors.blue
+                                          : Colors.grey,
                                 ),
                               )
                               .toList(),

@@ -9,10 +9,12 @@ part 'room.g.dart';
 enum RoomStatus {
   @JsonValue('open')
   open,
-  @JsonValue('closed')
-  closed,
+  @JsonValue('counting_down')
+  countingDown,
   @JsonValue('in_progress')
   inProgress,
+  @JsonValue('ended')
+  ended,
 }
 
 @JsonSerializable()
@@ -111,7 +113,7 @@ class Room extends Equatable {
       hostUID: '3',
       playerUIDs: const ['1', '2', '3'],
       questionIds: const ['1', '2', '3'],
-      status: RoomStatus.closed,
+      status: RoomStatus.ended,
       createdAt: Timestamp.now(),
       startedAt: Timestamp.now(),
       endedAt: Timestamp.now(),
