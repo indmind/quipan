@@ -26,6 +26,7 @@ class Room extends Equatable {
   final String hostUID;
   final List<String> playerUIDs;
   final List<String> questionIds;
+  final int currentQuestionIndex;
   final RoomStatus status;
 
   final Timestamp createdAt;
@@ -38,6 +39,7 @@ class Room extends Equatable {
     required this.hostUID,
     required this.playerUIDs,
     required this.questionIds,
+    required this.currentQuestionIndex,
     required this.status,
     required this.createdAt,
     this.startedAt,
@@ -54,6 +56,7 @@ class Room extends Equatable {
     String? hostUID,
     List<String>? playerUIDs,
     List<String>? questionIds,
+    int? currentQuestionIndex,
     RoomStatus? status,
     Timestamp? createdAt,
     Timestamp? startedAt,
@@ -65,6 +68,7 @@ class Room extends Equatable {
       hostUID: hostUID ?? this.hostUID,
       playerUIDs: playerUIDs ?? this.playerUIDs,
       questionIds: questionIds ?? this.questionIds,
+      currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       startedAt: startedAt ?? this.startedAt,
@@ -79,6 +83,7 @@ class Room extends Equatable {
         hostUID,
         playerUIDs,
         questionIds,
+        currentQuestionIndex,
         createdAt,
         startedAt,
         endedAt,
@@ -91,6 +96,7 @@ class Room extends Equatable {
       hostUID: '1',
       playerUIDs: const ['1', '2', '3'],
       questionIds: const ['1', '2', '3'],
+      currentQuestionIndex: 0,
       status: RoomStatus.open,
       createdAt: Timestamp.now(),
       startedAt: Timestamp.now(),
@@ -102,6 +108,7 @@ class Room extends Equatable {
       hostUID: '2',
       playerUIDs: const ['1', '2', '3'],
       questionIds: const ['1', '2', '3'],
+      currentQuestionIndex: 0,
       status: RoomStatus.open,
       createdAt: Timestamp.now(),
       startedAt: Timestamp.now(),
@@ -113,6 +120,7 @@ class Room extends Equatable {
       hostUID: '3',
       playerUIDs: const ['1', '2', '3'],
       questionIds: const ['1', '2', '3'],
+      currentQuestionIndex: 0,
       status: RoomStatus.ended,
       createdAt: Timestamp.now(),
       startedAt: Timestamp.now(),
