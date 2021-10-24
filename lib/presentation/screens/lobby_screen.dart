@@ -19,7 +19,7 @@ class LobbyScreen extends HookWidget {
     final user = useProvider(authControllerProvider);
     final controller = useProvider(lobbyControllerProvider);
 
-    final room = controller.joinedRoom;
+    final room = controller.current;
     final participants = controller.joinedRoomPlayers;
 
     final roomNameController = useTextEditingController(
@@ -146,13 +146,13 @@ class LobbyScreen extends HookWidget {
   }
 
   void checkRoomStatus(LobbyController value) {
-    if (value.joinedRoom == null) {
+    if (value.current == null) {
       Get.off(() => const HomeScreen());
-    } else if (value.joinedRoom!.status == RoomStatus.countingDown) {
+    } else if (value.current!.status == RoomStatus.countingDown) {
       Get.off(() => const CountdownScreen());
-    } else if (value.joinedRoom!.status == RoomStatus.inProgress) {
+    } else if (value.current!.status == RoomStatus.inProgress) {
       Get.off(() => const QuizScreen());
-    } else if (value.joinedRoom!.status == RoomStatus.finished) {
+    } else if (value.current!.status == RoomStatus.finished) {
       Get.off(() => const LeaderbordScreen());
     }
   }

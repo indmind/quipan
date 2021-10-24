@@ -15,13 +15,13 @@ class LeaderbordScreen extends HookWidget {
     final user = useProvider(authControllerProvider);
     final lobby = useProvider(lobbyControllerProvider);
 
-    final isHost = user?.uid == lobby.joinedRoom?.hostUID;
+    final isHost = user?.uid == lobby.current?.hostUID;
 
     return Scaffold(
       body: ProviderListener<LobbyController>(
         provider: lobbyControllerProvider,
         onChange: (context, lobby) {
-          if (lobby.joinedRoom == null) {
+          if (lobby.current == null) {
             Get.off(() => const HomeScreen());
           }
         },

@@ -24,9 +24,9 @@ class CountdownScreen extends HookWidget {
     return ProviderListener<LobbyController>(
       provider: lobbyControllerProvider,
       onChange: (context, value) {
-        if (value.joinedRoom == null) {
+        if (value.current == null) {
           Get.off(() => const HomeScreen());
-        } else if (value.joinedRoom!.status == RoomStatus.inProgress) {
+        } else if (value.current!.status == RoomStatus.inProgress) {
           Get.off(() => const QuizScreen());
         }
       },

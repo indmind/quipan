@@ -16,7 +16,7 @@ class QuizScreen extends HookWidget {
   Widget build(BuildContext context) {
     final controller = useProvider(lobbyControllerProvider);
 
-    final room = controller.joinedRoom;
+    final room = controller.current;
     final questions = controller.questions;
 
     final hasQuestion = room != null &&
@@ -56,9 +56,9 @@ class QuizScreen extends HookWidget {
       body: ProviderListener<LobbyController>(
         provider: lobbyControllerProvider,
         onChange: (context, lobby) {
-          if (lobby.joinedRoom == null) {
+          if (lobby.current == null) {
             Get.off(() => const HomeScreen());
-          } else if (lobby.joinedRoom!.status == RoomStatus.finished) {
+          } else if (lobby.current!.status == RoomStatus.finished) {
             Get.off(() => const LeaderbordScreen());
           }
         },

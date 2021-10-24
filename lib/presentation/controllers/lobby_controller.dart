@@ -26,8 +26,8 @@ class LobbyController extends ChangeNotifier {
     roomRepository = _read(roomRepositoryProvider);
   }
 
-  Room? _joinedRoom;
-  Room? get joinedRoom => _joinedRoom;
+  Room? _current;
+  Room? get current => _current;
 
   final List<User> _joinedRoomPlayers = [];
   List<User> get joinedRoomPlayers => _joinedRoomPlayers;
@@ -38,17 +38,17 @@ class LobbyController extends ChangeNotifier {
   String? _message;
   String? get message => _message;
 
-  bool get isHost => _joinedRoom?.hostUID == _read(authControllerProvider)?.uid;
+  bool get isHost => _current?.hostUID == _read(authControllerProvider)?.uid;
 
   StreamSubscription<Room?>? _roomSubscription;
 
   Future<void> subscribeToJoinedRoom() async {
     _roomSubscription?.cancel();
 
-    if (joinedRoom == null) return;
+    if (current == null) return;
 
     _roomSubscription =
-        roomRepository.onRoomChanged(joinedRoom!.id).listen((room) async {
+        roomRepository.onRoomChanged(current!.id).listen((room) async {
       final status = room?.status;
 
       switch (status) {
@@ -56,19 +56,19 @@ class LobbyController extends ChangeNotifier {
           fetchPlayers();
           break;
         case RoomStatus.countingDown:
-          _joinedRoom = room;
+          _current = room;
           notifyListeners();
 
           fetchQuestions();
           break;
         case RoomStatus.inProgress:
-          _joinedRoom = room;
+          _current = room;
           if (questions.isEmpty) await fetchQuestions();
 
           notifyListeners();
           break;
         case RoomStatus.finished:
-          _joinedRoom = room;
+          _current = room;
           notifyListeners();
           break;
         case RoomStatus.ended:
@@ -86,7 +86,7 @@ class LobbyController extends ChangeNotifier {
   }
 
   Future<void> setActiveRoom(Room? room) async {
-    _joinedRoom = room;
+    _current = room;
     notifyListeners();
 
     if (room != null) {
@@ -126,18 +126,18 @@ class LobbyController extends ChangeNotifier {
       _message = 'You are not logged in';
       notifyListeners();
       return;
-    } else if (joinedRoom == null) {
+    } else if (current == null) {
       _message = 'You are not in a room';
       notifyListeners();
       return;
-    } else if (joinedRoom!.hostUID != user.uid) {
+    } else if (current!.hostUID != user.uid) {
       _message = 'You are not the host of this room';
       notifyListeners();
       return;
     }
 
     final room = await roomRepository.updateRoomName(
-      roomID: joinedRoom!.id,
+      roomID: current!.id,
       roomName: name,
     );
 
@@ -180,16 +180,16 @@ class LobbyController extends ChangeNotifier {
   Future<void> leaveRoom() async {
     final user = _read(authControllerProvider);
 
-    if (_joinedRoom == null) {
+    if (_current == null) {
       _message = 'You are not in a room';
       notifyListeners();
       return;
     }
 
     final result = isHost
-        ? await roomRepository.deleteRoom(_joinedRoom!.id)
+        ? await roomRepository.deleteRoom(_current!.id)
         : await roomRepository.leaveRoom(
-            roomID: _joinedRoom!.id,
+            roomID: _current!.id,
             userUID: user!.uid,
           );
 
@@ -205,13 +205,13 @@ class LobbyController extends ChangeNotifier {
   }
 
   Future<void> fetchPlayers() async {
-    if (joinedRoom == null) {
+    if (current == null) {
       _joinedRoomPlayers.clear();
       notifyListeners();
       return;
     }
 
-    final result = await roomRepository.getRoomPlayers(joinedRoom!.id);
+    final result = await roomRepository.getRoomPlayers(current!.id);
 
     result.fold(
       (failure) {
@@ -227,13 +227,13 @@ class LobbyController extends ChangeNotifier {
   }
 
   Future<void> fetchQuestions() async {
-    if (joinedRoom == null) {
+    if (current == null) {
       _questions.clear();
       notifyListeners();
       return;
     }
 
-    final result = await roomRepository.getRoomQuestions(joinedRoom!.id);
+    final result = await roomRepository.getRoomQuestions(current!.id);
 
     result.fold(
       (failure) {
@@ -249,17 +249,17 @@ class LobbyController extends ChangeNotifier {
   }
 
   Future<void> startCountdown() async {
-    if (joinedRoom == null) {
+    if (current == null) {
       _message = 'You are not in a room';
       notifyListeners();
       return;
     }
 
-    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+    if (current!.hostUID != _read(authControllerProvider)!.uid) {
       return;
     }
 
-    final result = await roomRepository.startRoomCountdown(joinedRoom!.id);
+    final result = await roomRepository.startRoomCountdown(current!.id);
 
     result.fold(
       (failure) {
@@ -267,7 +267,7 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _joinedRoom = room;
+        _current = room;
         notifyListeners();
 
         fetchQuestions();
@@ -277,17 +277,17 @@ class LobbyController extends ChangeNotifier {
 
   // Start the quiz only if the user is the one who started the quiz
   Future<void> startQuiz() async {
-    if (joinedRoom == null) {
+    if (current == null) {
       _message = 'You are not in a room';
       notifyListeners();
       return;
     }
 
-    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+    if (current!.hostUID != _read(authControllerProvider)!.uid) {
       return;
     }
 
-    final result = await roomRepository.startRoomQuiz(joinedRoom!.id);
+    final result = await roomRepository.startRoomQuiz(current!.id);
 
     result.fold(
       (failure) {
@@ -295,24 +295,24 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _joinedRoom = room;
+        _current = room;
         notifyListeners();
       },
     );
   }
 
   Future<void> startNextQuestion() async {
-    if (joinedRoom == null) {
+    if (current == null) {
       _message = 'You are not in a room';
       notifyListeners();
       return;
     }
 
-    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+    if (current!.hostUID != _read(authControllerProvider)!.uid) {
       return;
     }
 
-    final result = await roomRepository.startNextQuestion(joinedRoom!.id);
+    final result = await roomRepository.startNextQuestion(current!.id);
 
     result.fold(
       (failure) {
@@ -320,24 +320,24 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _joinedRoom = room;
+        _current = room;
         notifyListeners();
       },
     );
   }
 
   Future<void> finishQuiz() async {
-    if (joinedRoom == null) {
+    if (current == null) {
       _message = 'You are not in a room';
       notifyListeners();
       return;
     }
 
-    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+    if (current!.hostUID != _read(authControllerProvider)!.uid) {
       return;
     }
 
-    final result = await roomRepository.finishQuiz(joinedRoom!.id);
+    final result = await roomRepository.finishQuiz(current!.id);
 
     result.fold(
       (failure) {
@@ -345,24 +345,24 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _joinedRoom = room;
+        _current = room;
         notifyListeners();
       },
     );
   }
 
   Future<void> endGame() async {
-    if (joinedRoom == null) {
+    if (current == null) {
       _message = 'You are not in a room';
       notifyListeners();
       return;
     }
 
-    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+    if (current!.hostUID != _read(authControllerProvider)!.uid) {
       return;
     }
 
-    final result = await roomRepository.endGame(joinedRoom!.id);
+    final result = await roomRepository.endGame(current!.id);
 
     result.fold(
       (failure) {
@@ -370,7 +370,7 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _joinedRoom = room;
+        _current = room;
         notifyListeners();
       },
     );

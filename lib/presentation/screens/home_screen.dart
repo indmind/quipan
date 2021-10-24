@@ -27,7 +27,7 @@ class HomeScreen extends HookWidget {
     return ProviderListener<LobbyController>(
       provider: lobbyControllerProvider,
       onChange: (context, value) {
-        if (value.joinedRoom != null) {
+        if (value.current != null) {
           Get.off(() => const LobbyScreen());
         }
       },
