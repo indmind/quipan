@@ -18,12 +18,17 @@ class CountdownController {
   int get tick => _tick;
   bool get isFinished => _tick <= 0;
 
-  void tickDown() {
-    _tick--;
-  }
-
   void reset([int? newDuration]) {
     _tick = newDuration ?? 0;
+  }
+}
+
+// controller private methods
+class _CountdownController extends CountdownController {
+  _CountdownController(int _tick) : super(_tick);
+  
+  void tickDown() {
+    _tick--;
   }
 }
 
@@ -39,14 +44,14 @@ class _CountdownHook extends Hook<CountdownController> {
 
 class __CountdownHookState
     extends HookState<CountdownController, _CountdownHook> {
-  late final CountdownController _controller;
+  late final _CountdownController _controller;
   Timer? _timer;
 
   @override
   void initHook() {
     super.initHook();
 
-    _controller = CountdownController(hook.duration);
+    _controller = _CountdownController(hook.duration);
 
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       if (_controller.tick > 0) {
