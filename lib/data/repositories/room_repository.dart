@@ -271,4 +271,77 @@ class RoomRepositoryImpl implements RoomRepository {
       return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
     }
   }
+
+  @override
+  Future<Either<Failure, Room>> startNextQuestion(String roomID) async {
+    try {
+      final doc = await _firestore.rooms.doc(roomID).get();
+
+      if (doc.exists) {
+        await doc.reference.update({
+          'currentQuestionIndex': FieldValue.increment(1),
+        });
+
+        return Right(
+          doc.data()!.copyWith(
+                currentQuestionIndex: doc.data()!.currentQuestionIndex + 1,
+              ),
+        );
+      } else {
+        return Left(DatabaseFailure('Room Not Found'));
+      }
+    } on FirebaseException catch (e) {
+      return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Room>> finishQuiz(String roomID) async {
+    try {
+      final doc = await _firestore.rooms.doc(roomID).get();
+
+      if (doc.exists) {
+        await doc.reference.update({
+          'status': 'finished',
+          'finishedAt': FieldValue.serverTimestamp(),
+        });
+
+        return Right(
+          doc.data()!.copyWith(
+                status: RoomStatus.finished,
+                endedAt: Timestamp.now(),
+              ),
+        );
+      } else {
+        return Left(DatabaseFailure('Room Not Found'));
+      }
+    } on FirebaseException catch (e) {
+      return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Room>> endGame(String roomID) async {
+    try {
+      final doc = await _firestore.rooms.doc(roomID).get();
+
+      if (doc.exists) {
+        await doc.reference.update({
+          'status': 'ended',
+          'endedAt': FieldValue.serverTimestamp(),
+        });
+
+        return Right(
+          doc.data()!.copyWith(
+                status: RoomStatus.ended,
+                endedAt: Timestamp.now(),
+              ),
+        );
+      } else {
+        return Left(DatabaseFailure('Room Not Found'));
+      }
+    } on FirebaseException catch (e) {
+      return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
+    }
+  }
 }

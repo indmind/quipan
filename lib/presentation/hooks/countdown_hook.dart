@@ -16,6 +16,7 @@ class CountdownController {
   CountdownController(this._tick);
 
   int get tick => _tick;
+  bool get isFinished => _tick <= 0;
 
   void tickDown() {
     _tick--;

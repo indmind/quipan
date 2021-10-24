@@ -13,6 +13,8 @@ enum RoomStatus {
   countingDown,
   @JsonValue('in_progress')
   inProgress,
+  @JsonValue('finished')
+  finished,
   @JsonValue('ended')
   ended,
 }
@@ -31,6 +33,7 @@ class Room extends Equatable {
 
   final Timestamp createdAt;
   final Timestamp? startedAt;
+  final Timestamp? finishedAt;
   final Timestamp? endedAt;
 
   const Room({
@@ -43,6 +46,7 @@ class Room extends Equatable {
     required this.status,
     required this.createdAt,
     this.startedAt,
+    this.finishedAt,
     this.endedAt,
   });
 
@@ -60,6 +64,7 @@ class Room extends Equatable {
     RoomStatus? status,
     Timestamp? createdAt,
     Timestamp? startedAt,
+    Timestamp? finishedAt,
     Timestamp? endedAt,
   }) {
     return Room(
@@ -72,6 +77,7 @@ class Room extends Equatable {
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       startedAt: startedAt ?? this.startedAt,
+      finishedAt: finishedAt ?? this.finishedAt,
       endedAt: endedAt ?? this.endedAt,
     );
   }
@@ -86,6 +92,7 @@ class Room extends Equatable {
         currentQuestionIndex,
         createdAt,
         startedAt,
+        finishedAt,
         endedAt,
       ];
 

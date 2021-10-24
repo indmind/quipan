@@ -22,6 +22,8 @@ Room _$RoomFromJson(Map<String, dynamic> json) => Room(
           const TimestampConverter().fromJson(json['createdAt'] as Timestamp),
       startedAt: const NullableTimestampConverter()
           .fromJson(json['startedAt'] as Timestamp?),
+      finishedAt: const NullableTimestampConverter()
+          .fromJson(json['finishedAt'] as Timestamp?),
       endedAt: const NullableTimestampConverter()
           .fromJson(json['endedAt'] as Timestamp?),
     );
@@ -37,6 +39,8 @@ Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
       'startedAt':
           const NullableTimestampConverter().toJson(instance.startedAt),
+      'finishedAt':
+          const NullableTimestampConverter().toJson(instance.finishedAt),
       'endedAt': const NullableTimestampConverter().toJson(instance.endedAt),
     };
 
@@ -44,5 +48,6 @@ const _$RoomStatusEnumMap = {
   RoomStatus.open: 'open',
   RoomStatus.countingDown: 'counting_down',
   RoomStatus.inProgress: 'in_progress',
+  RoomStatus.finished: 'finished',
   RoomStatus.ended: 'ended',
 };

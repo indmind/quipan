@@ -14,7 +14,7 @@ Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
               .fromJson(e as Map<String, dynamic>))
           .toList(),
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-      timeSeconds: json['timeSeconds'] as int,
+      duration: json['duration'] as int,
     );
 
 Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
@@ -23,5 +23,5 @@ Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'options':
           instance.options.map(const QuestionOptionConverter().toJson).toList(),
       'tags': instance.tags,
-      'timeSeconds': instance.timeSeconds,
+      'duration': instance.duration,
     };

@@ -67,6 +67,10 @@ class LobbyController extends ChangeNotifier {
 
           notifyListeners();
           break;
+        case RoomStatus.finished:
+          _joinedRoom = room;
+          notifyListeners();
+          break;
         case RoomStatus.ended:
         default:
           setActiveRoom(null);
@@ -284,6 +288,81 @@ class LobbyController extends ChangeNotifier {
     }
 
     final result = await roomRepository.startRoomQuiz(joinedRoom!.id);
+
+    result.fold(
+      (failure) {
+        _message = failure.message;
+        notifyListeners();
+      },
+      (room) {
+        _joinedRoom = room;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> startNextQuestion() async {
+    if (joinedRoom == null) {
+      _message = 'You are not in a room';
+      notifyListeners();
+      return;
+    }
+
+    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+      return;
+    }
+
+    final result = await roomRepository.startNextQuestion(joinedRoom!.id);
+
+    result.fold(
+      (failure) {
+        _message = failure.message;
+        notifyListeners();
+      },
+      (room) {
+        _joinedRoom = room;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> finishQuiz() async {
+    if (joinedRoom == null) {
+      _message = 'You are not in a room';
+      notifyListeners();
+      return;
+    }
+
+    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+      return;
+    }
+
+    final result = await roomRepository.finishQuiz(joinedRoom!.id);
+
+    result.fold(
+      (failure) {
+        _message = failure.message;
+        notifyListeners();
+      },
+      (room) {
+        _joinedRoom = room;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> endGame() async {
+    if (joinedRoom == null) {
+      _message = 'You are not in a room';
+      notifyListeners();
+      return;
+    }
+
+    if (joinedRoom!.hostUID != _read(authControllerProvider)!.uid) {
+      return;
+    }
+
+    final result = await roomRepository.endGame(joinedRoom!.id);
 
     result.fold(
       (failure) {

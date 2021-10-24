@@ -33,6 +33,9 @@ abstract class RoomRepository {
 
   Future<Either<Failure, Room>> startRoomCountdown(String roomID);
   Future<Either<Failure, Room>> startRoomQuiz(String roomID);
+  Future<Either<Failure, Room>> startNextQuestion(String roomID);
+  Future<Either<Failure, Room>> finishQuiz(String roomID);
+  Future<Either<Failure, Room>> endGame(String roomID);
 
   Future<Either<Failure, Room>> deleteRoom(String roomID);
 

@@ -13,14 +13,14 @@ class Question extends Equatable {
   final String question;
   final List<QuestionOption> options;
   final List<String> tags;
-  final int timeSeconds;
+  final int duration;
 
   const Question({
     required this.id,
     required this.question,
     required this.options,
     required this.tags,
-    required this.timeSeconds,
+    required this.duration,
   });
 
   Question copyWith({
@@ -28,14 +28,14 @@ class Question extends Equatable {
     String? question,
     List<QuestionOption>? options,
     List<String>? tags,
-    int? timeSeconds,
+    int? duration,
   }) {
     return Question(
       id: id ?? this.id,
       question: question ?? this.question,
       options: options ?? this.options,
       tags: tags ?? this.tags,
-      timeSeconds: timeSeconds ?? this.timeSeconds,
+      duration: duration ?? this.duration,
     );
   }
 
@@ -68,6 +68,6 @@ class Question extends Equatable {
           ),
         ],
         tags: ['makanan'],
-        timeSeconds: 10,
+        duration: 10,
       );
 }
