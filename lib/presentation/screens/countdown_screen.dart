@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quizpancasila/domain/entities/room.dart';
 import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
+import 'package:quizpancasila/presentation/hooks/countdown_hook.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
 import 'package:quizpancasila/presentation/screens/quiz_screen.dart';
 
@@ -14,22 +13,13 @@ class CountdownScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final countdown = useState(3);
+    final countdown = useCountdown(3, disposeOnEnd: true);
 
     useEffect(() {
-      Timer? timer;
-
-      timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        if (countdown.value > 0) {
-          countdown.value -= 1;
-        } else {
-          timer?.cancel();
-          context.read(lobbyControllerProvider).startQuiz();
-        }
-      });
-
-      return timer.cancel;
-    }, []);
+      if (countdown.tick == 0) {
+        context.read(lobbyControllerProvider).startQuiz();
+      }
+    }, [countdown.tick]);
 
     return ProviderListener<LobbyController>(
       provider: lobbyControllerProvider,
@@ -43,7 +33,7 @@ class CountdownScreen extends HookWidget {
       child: Scaffold(
         body: Center(
           child: Text(
-            '${countdown.value}',
+            '${countdown.tick}',
             style: Theme.of(context).textTheme.headline4,
           ),
         ),

@@ -271,6 +271,7 @@ class LobbyController extends ChangeNotifier {
     );
   }
 
+  // Start the quiz only if the user is the one who started the quiz
   Future<void> startQuiz() async {
     if (joinedRoom == null) {
       _message = 'You are not in a room';

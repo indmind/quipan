@@ -17,16 +17,9 @@ class QuizScreen extends HookWidget {
     final room = controller.joinedRoom;
     final questions = controller.questions;
 
-    final hasQuestion =
-        questions.isNotEmpty && room!.currentQuestionIndex < questions.length;
-
-    useEffect(() {
-      Future.microtask(() {
-        if (room!.currentQuestionIndex > questions.length) {
-          Get.off(() => const LeaderbordScreen());
-        }
-      });
-    }, [controller]);
+    final hasQuestion = room != null &&
+        questions.isNotEmpty &&
+        room.currentQuestionIndex < questions.length;
 
     final Question? question =
         hasQuestion ? questions[room!.currentQuestionIndex] : null;
@@ -37,6 +30,8 @@ class QuizScreen extends HookWidget {
         onChange: (context, lobby) {
           if (lobby.joinedRoom == null) {
             Get.off(() => const HomeScreen());
+          } else if (room!.currentQuestionIndex > questions.length) {
+            Get.off(() => const LeaderbordScreen());
           }
         },
         child: SafeArea(

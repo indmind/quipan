@@ -5,7 +5,7 @@ part 'question_option.g.dart';
 
 @JsonSerializable()
 class QuestionOption extends Equatable {
-  final String id;
+  final int id;
   final String value;
   @JsonKey(name: 'is_correct')
   final bool isCorrect;
@@ -29,7 +29,7 @@ class QuestionOption extends Equatable {
       ];
 
   factory QuestionOption.fake() => const QuestionOption(
-        id: '1',
+        id: 1,
         value: 'fake',
         isCorrect: false,
       );
