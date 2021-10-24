@@ -59,6 +59,7 @@ class RoomRepositoryImpl implements RoomRepository {
         status: RoomStatus.open,
         createdAt: Timestamp.now(),
         playerUIDs: [hostUID],
+        playerScores: {hostUID: 0},
       );
 
       final doc = await _firestore.rooms.add(room);
@@ -120,6 +121,7 @@ class RoomRepositoryImpl implements RoomRepository {
         if (room.status == RoomStatus.open) {
           await _firestore.rooms.doc(roomID).update({
             'playerUIDs': FieldValue.arrayUnion([userUID]),
+            "playerScores.$userUID": 0,
           });
 
           return Right(
@@ -147,6 +149,7 @@ class RoomRepositoryImpl implements RoomRepository {
         if (room.status == RoomStatus.open) {
           await _firestore.rooms.doc(roomID).update({
             'playerUIDs': FieldValue.arrayRemove([userUID]),
+            "playerScores.$userUID": FieldValue.delete(),
           });
 
           return Right(room.copyWith(
@@ -335,6 +338,31 @@ class RoomRepositoryImpl implements RoomRepository {
           doc.data()!.copyWith(
                 status: RoomStatus.ended,
                 endedAt: Timestamp.now(),
+              ),
+        );
+      } else {
+        return Left(DatabaseFailure('Room Not Found'));
+      }
+    } on FirebaseException catch (e) {
+      return Left(DatabaseFailure(e.message ?? 'Unknown Failure'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Room>> submitScore(
+      String roomID, String userUID, int score) async {
+    try {
+      final doc = await _firestore.rooms.doc(roomID).get();
+
+      if (doc.exists) {
+        await doc.reference.update({
+          'playerScores.$userUID': score,
+        });
+
+        return Right(
+          doc.data()!.copyWith(
+                playerScores: Map.from(doc.data()!.playerScores)
+                  ..[userUID] = score,
               ),
         );
       } else {

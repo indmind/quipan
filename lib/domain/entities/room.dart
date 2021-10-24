@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -28,6 +30,7 @@ class Room extends Equatable {
   final String hostUID;
   final List<String> playerUIDs;
   final List<String> questionIds;
+  final Map<String, int> playerScores;
   final int currentQuestionIndex;
   final RoomStatus status;
 
@@ -42,6 +45,7 @@ class Room extends Equatable {
     required this.hostUID,
     required this.playerUIDs,
     required this.questionIds,
+    required this.playerScores,
     required this.currentQuestionIndex,
     required this.status,
     required this.createdAt,
@@ -60,6 +64,7 @@ class Room extends Equatable {
     String? hostUID,
     List<String>? playerUIDs,
     List<String>? questionIds,
+    Map<String, int>? playerScores,
     int? currentQuestionIndex,
     RoomStatus? status,
     Timestamp? createdAt,
@@ -73,6 +78,7 @@ class Room extends Equatable {
       hostUID: hostUID ?? this.hostUID,
       playerUIDs: playerUIDs ?? this.playerUIDs,
       questionIds: questionIds ?? this.questionIds,
+      playerScores: playerScores ?? this.playerScores,
       currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
@@ -89,6 +95,7 @@ class Room extends Equatable {
         hostUID,
         playerUIDs,
         questionIds,
+        playerScores,
         currentQuestionIndex,
         createdAt,
         startedAt,
@@ -103,6 +110,7 @@ class Room extends Equatable {
       hostUID: '1',
       playerUIDs: const ['1', '2', '3'],
       questionIds: const ['1', '2', '3'],
+      playerScores: {'1': 0, '2': 0, '3': 0},
       currentQuestionIndex: 0,
       status: RoomStatus.open,
       createdAt: Timestamp.now(),
@@ -115,6 +123,7 @@ class Room extends Equatable {
       hostUID: '2',
       playerUIDs: const ['1', '2', '3'],
       questionIds: const ['1', '2', '3'],
+      playerScores: {'1': 0, '2': 0, '3': 0},
       currentQuestionIndex: 0,
       status: RoomStatus.open,
       createdAt: Timestamp.now(),
@@ -127,6 +136,7 @@ class Room extends Equatable {
       hostUID: '3',
       playerUIDs: const ['1', '2', '3'],
       questionIds: const ['1', '2', '3'],
+      playerScores: {'1': 0, '2': 0, '3': 0},
       currentQuestionIndex: 0,
       status: RoomStatus.ended,
       createdAt: Timestamp.now(),

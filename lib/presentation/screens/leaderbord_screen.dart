@@ -29,7 +29,14 @@ class LeaderbordScreen extends HookWidget {
           child: Center(
             child: Column(
               children: [
-                const Text('Leaderbord'),
+                const SizedBox(height: 20),
+                const Text(
+                  'Leaderbord',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 if (isHost)
                   ElevatedButton(
                     onPressed: () {
@@ -37,6 +44,42 @@ class LeaderbordScreen extends HookWidget {
                     },
                     child: const Text('End Game'),
                   ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: lobby.leaderboard.length,
+                  itemBuilder: (context, index) {
+                    final user = lobby.leaderboard[index];
+
+                    final playerHasScore =
+                        lobby.current?.playerScores.containsKey(user.uid) ??
+                            false;
+
+                    final score = playerHasScore
+                        ? lobby.current?.playerScores[user.uid] ?? 0
+                        : 0;
+
+                    return ListTile(
+                      title: Text(user.name),
+                      subtitle: Text(score.toString()),
+                      leading: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: index == 0
+                              ? Colors.green
+                              : index == 1
+                                  ? Colors.yellow
+                                  : index == 2
+                                      ? Colors.orange
+                                      : Colors.grey,
+                        ),
+                        child: Center(child: Text((index + 1).toString())),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),

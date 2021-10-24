@@ -27,11 +27,13 @@ class QuizScreen extends HookWidget {
         hasQuestion ? questions[room!.currentQuestionIndex] : null;
 
     final timer = useCountdown(question?.duration ?? 0);
+    final showedAt = useState<DateTime?>(null);
 
     // reset the timer when the question changes
     useEffect(() {
       if (question != null) {
         timer.reset(question.duration);
+        showedAt.value = DateTime.now();
       }
     }, [question]);
 
@@ -84,7 +86,26 @@ class QuizScreen extends HookWidget {
 
                     return ListTile(
                       title: Text(option.value),
-                      // onTap: () => controller.answer(option.id),
+                      selected: controller.answers[question.id] == option.id,
+                      tileColor: controller.isCurrentQuestionAnswered
+                          ? (option.isCorrect ? Colors.green : Colors.red)
+                          : null,
+                      onTap: () {
+                        if (controller.isCurrentQuestionAnswered) {
+                          return;
+                        }
+
+                        final timeToAnswerMs = DateTime.now()
+                            .difference(showedAt.value!)
+                            .inMilliseconds;
+
+                        controller.answer(
+                          questionId: question.id,
+                          optionId: option.id,
+                          questionDurationMs: question.duration * 1000,
+                          answerDuration: timeToAnswerMs,
+                        );
+                      },
                     );
                   },
                 )

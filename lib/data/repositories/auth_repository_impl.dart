@@ -5,6 +5,7 @@ import 'package:quizpancasila/domain/entities/user.dart';
 import 'package:quizpancasila/domain/repositories/auth_repository.dart';
 import 'package:username_gen/username_gen.dart';
 import 'package:quizpancasila/common/references.dart';
+
 class AuthRepositoryImpl implements AuthRepository {
   final auth.FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;

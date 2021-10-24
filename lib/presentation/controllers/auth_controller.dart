@@ -25,7 +25,7 @@ class AuthController extends StateNotifier<User?> {
     _subscription?.cancel();
     _subscription = _repository.onAuthStateChanged.listen((user) {
       state = user;
-      
+
       // check if users is already in room
       _read(lobbyControllerProvider.notifier).fetchActiveRoom();
       _read(roomControllerProvider.notifier).fetchOpenRooms();

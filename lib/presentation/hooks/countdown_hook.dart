@@ -26,7 +26,7 @@ class CountdownController {
 // controller private methods
 class _CountdownController extends CountdownController {
   _CountdownController(int _tick) : super(_tick);
-  
+
   void tickDown() {
     _tick--;
   }

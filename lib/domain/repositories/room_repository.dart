@@ -37,6 +37,12 @@ abstract class RoomRepository {
   Future<Either<Failure, Room>> finishQuiz(String roomID);
   Future<Either<Failure, Room>> endGame(String roomID);
 
+  Future<Either<Failure, Room>> submitScore(
+    String roomID,
+    String userUID,
+    int score,
+  );
+
   Future<Either<Failure, Room>> deleteRoom(String roomID);
 
   Future<Either<Failure, Room?>> getActiveRoom(String userUID);
