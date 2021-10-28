@@ -171,7 +171,7 @@ class RoomRepositoryImpl implements RoomRepository {
     try {
       final snapshot = await _firestore.rooms
           .where('playerUIDs', arrayContains: userUID)
-          .where('status', isNotEqualTo: 'closed')
+          .where('status', isNotEqualTo: 'ended')
           .get();
 
       if (snapshot.docs.isNotEmpty) {

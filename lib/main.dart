@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,13 +30,19 @@ class MyApp extends StatelessWidget {
           headline4: TextStyle(color: kTextColor, fontWeight: FontWeight.bold),
         )),
         appBarTheme: const AppBarTheme(
+          toolbarHeight: 60,
           color: kBackgroundColor,
           elevation: 0,
           foregroundColor: kTextColor,
           centerTitle: true,
           titleTextStyle: TextStyle(
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
+            color: kTextColor,
+          ),
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: kPrimaryColor,
+            statusBarIconBrightness: Brightness.dark,
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
