@@ -16,12 +16,14 @@ class HomeScreen extends HookWidget {
     final authController = useProvider(authControllerProvider);
     final displayNameController =
         useTextEditingController(text: authController?.name);
+    final displayName = useState(authController?.name);
 
     final roomController = useProvider(roomControllerProvider);
     final lobbyController = useProvider(lobbyControllerProvider);
 
     useEffect(() {
       displayNameController.text = authController?.name ?? '';
+      displayName.value = authController?.name ?? '';
     }, [authController]);
 
     return ProviderListener<LobbyController>(
@@ -32,6 +34,9 @@ class HomeScreen extends HookWidget {
         }
       },
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Home'),
+        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -42,20 +47,59 @@ class HomeScreen extends HookWidget {
                     Expanded(
                       child: TextField(
                         controller: displayNameController,
-                        decoration: const InputDecoration(
+                        onChanged: (value) {
+                          displayName.value = value;
+                        },
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                        ),
+                        decoration: InputDecoration(
                           hintText: 'Username',
+                          fillColor: Colors.grey[200],
+                          filled: true,
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomLeft: Radius.circular(8),
+                            ),
+                            borderSide: BorderSide.none,
+                          ),
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        final controller =
-                            context.read(authControllerProvider.notifier);
+                    Container(
+                      padding: const EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(
+                        color: authController?.name != displayName.value
+                            ? Colors.green
+                            : Colors.grey[400],
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8),
+                        ),
+                      ),
+                      child: IconButton(
+                        onPressed: authController?.name != displayName.value
+                            ? () async {
+                                final controller = context
+                                    .read(authControllerProvider.notifier);
 
-                        controller
-                            .updateDisplayName(displayNameController.text);
-                      },
-                      icon: const Icon(Icons.save),
+                          await controller.updateDisplayName(
+                                    displayNameController.text);
+
+                          Get.showSnackbar(GetBar(
+                                  message: 'Nama berhasil diganti!',
+                                  backgroundColor: Colors.green,
+                                  duration: 2.seconds,
+                                  animationDuration: 500.milliseconds,
+                                  snackStyle: SnackStyle.FLOATING,
+                                  margin: const EdgeInsets.all(8),
+                                  borderRadius: 10.0,
+                                ));
+                              }
+                            : null,
+                        icon: const Icon(Icons.check),
+                      ),
                     ),
                   ],
                 ),

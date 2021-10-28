@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:quizpancasila/presentation/constants/colors.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
 
 Future<void> main() async {
@@ -20,7 +22,26 @@ class MyApp extends StatelessWidget {
       title: 'Quiz Pancasila',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: kPrimaryColor,
+        scaffoldBackgroundColor: kBackgroundColor,
+        textTheme: GoogleFonts.workSansTextTheme(const TextTheme(
+          bodyText1: TextStyle(color: kTextColor),
+        )),
+        appBarTheme: const AppBarTheme(
+          color: kBackgroundColor,
+          elevation: 0,
+          foregroundColor: kTextColor,
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: kPrimaryColor,
+          ),
+        ),
       ),
       home: const HomeScreen(),
     );
