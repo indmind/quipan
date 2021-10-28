@@ -45,14 +45,17 @@ class QuizScreen extends HookWidget {
           return;
         }
 
-        // if this is the last question, finish the game
-        if (room.currentQuestionIndex < questions.length - 1) {
-          controller.startNextQuestion();
-        } else {
-          controller.finishQuiz();
+        // check if the question has been loaded
+        if (questions.isNotEmpty) {
+          // if this is the last question, finish the game
+          if (room.currentQuestionIndex < questions.length - 1) {
+            controller.startNextQuestion();
+          } else {
+            controller.finishQuiz();
+          }
         }
       }
-    }, [timer.isFinished]);
+    }, [timer.isFinished, questions]);
 
     return Scaffold(
       body: ProviderListener<LobbyController>(
