@@ -91,6 +91,8 @@ class LobbyController extends ChangeNotifier {
           break;
         case RoomStatus.countingDown:
           _current = room;
+          _answers.clear();
+          _score = 0;
           notifyListeners();
 
           fetchQuestions();
@@ -109,6 +111,9 @@ class LobbyController extends ChangeNotifier {
           break;
         case RoomStatus.ended:
         default:
+          _answers.clear();
+          _score = 0;
+
           setActiveRoom(null);
           break;
       }
@@ -125,7 +130,6 @@ class LobbyController extends ChangeNotifier {
     _current = room;
     _questions.clear();
     _joinedRoomPlayers.clear();
-    _answers.clear();
 
     notifyListeners();
 
