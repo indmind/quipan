@@ -303,10 +303,10 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _current = room;
-        notifyListeners();
+        // _current = room;
+        // notifyListeners();
 
-        fetchQuestions();
+        // fetchQuestions();
       },
     );
   }
@@ -323,8 +323,8 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _current = room;
-        notifyListeners();
+        // _current = room;
+        // notifyListeners();
       },
     );
   }
@@ -340,8 +340,8 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _current = room;
-        notifyListeners();
+        // _current = room;
+        // notifyListeners();
       },
     );
   }
@@ -357,8 +357,8 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _current = room;
-        notifyListeners();
+        // _current = room;
+        // notifyListeners();
       },
     );
   }
@@ -374,8 +374,8 @@ class LobbyController extends ChangeNotifier {
         notifyListeners();
       },
       (room) {
-        _current = room;
-        notifyListeners();
+        // _current = room;
+        // notifyListeners();
       },
     );
   }
