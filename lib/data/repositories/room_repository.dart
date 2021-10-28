@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quizpancasila/common/generator.dart';
 import 'package:quizpancasila/domain/entities/question.dart';
 import 'package:quizpancasila/domain/entities/room.dart';
 import 'package:quizpancasila/common/failure.dart';
@@ -6,6 +7,7 @@ import 'package:dartz/dartz.dart';
 import 'package:quizpancasila/domain/entities/user.dart';
 import 'package:quizpancasila/domain/repositories/room_repository.dart';
 import 'package:quizpancasila/common/references.dart';
+
 
 class RoomRepositoryImpl implements RoomRepository {
   final FirebaseFirestore _firestore;
@@ -46,7 +48,7 @@ class RoomRepositoryImpl implements RoomRepository {
     required List<String> questionIDs,
     String? roomName,
   }) async {
-    roomName ??= 'Room ${DateTime.now().millisecondsSinceEpoch}';
+    roomName ??= roomNameGen.generate();
 
     try {
       final room = Room(

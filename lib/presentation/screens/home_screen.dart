@@ -38,6 +38,7 @@ class HomeScreen extends HookWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Home'),
+          automaticallyImplyLeading: false,
         ),
         body: Column(
           children: [
