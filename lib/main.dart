@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: kBackgroundColor,
         textTheme: GoogleFonts.workSansTextTheme(const TextTheme(
           bodyText1: TextStyle(color: kTextColor),
+          headline4: TextStyle(color: kTextColor, fontWeight: FontWeight.bold),
         )),
         appBarTheme: const AppBarTheme(
           color: kBackgroundColor,

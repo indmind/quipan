@@ -16,7 +16,7 @@ class HomeScreen extends HookWidget {
     final authController = useProvider(authControllerProvider);
     final displayNameController =
         useTextEditingController(text: authController?.name);
-    final displayName = useState(authController?.name);
+    final displayName = useState<String?>(authController?.name);
 
     final roomController = useProvider(roomControllerProvider);
     final lobbyController = useProvider(lobbyControllerProvider);
@@ -37,81 +37,86 @@ class HomeScreen extends HookWidget {
         appBar: AppBar(
           title: const Text('Home'),
         ),
-        body: SafeArea(
+        body: Padding(
+          padding: const EdgeInsets.all(22.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: displayNameController,
-                        onChanged: (value) {
-                          displayName.value = value;
-                        },
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Username',
-                          fillColor: Colors.grey[200],
-                          filled: true,
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              bottomLeft: Radius.circular(8),
-                            ),
-                            borderSide: BorderSide.none,
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: displayNameController,
+                      onChanged: (value) {
+                        displayName.value = value;
+                      },
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Username',
+                        fillColor: Colors.grey[200],
+                        filled: true,
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomLeft: Radius.circular(8),
                           ),
+                          borderSide: BorderSide.none,
                         ),
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(6.0),
-                      decoration: BoxDecoration(
-                        color: authController?.name != displayName.value
-                            ? Colors.green
-                            : Colors.grey[400],
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
-                        ),
-                      ),
-                      child: IconButton(
-                        onPressed: authController?.name != displayName.value
-                            ? () async {
-                                final controller = context
-                                    .read(authControllerProvider.notifier);
-
-                          await controller.updateDisplayName(
-                                    displayNameController.text);
-
-                          Get.showSnackbar(GetBar(
-                                  message: 'Nama berhasil diganti!',
-                                  backgroundColor: Colors.green,
-                                  duration: 2.seconds,
-                                  animationDuration: 500.milliseconds,
-                                  snackStyle: SnackStyle.FLOATING,
-                                  margin: const EdgeInsets.all(8),
-                                  borderRadius: 10.0,
-                                ));
-                              }
-                            : null,
-                        icon: const Icon(Icons.check),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(5.5),
+                    decoration: BoxDecoration(
+                      color: authController?.name != displayName.value
+                          ? Colors.green
+                          : Colors.grey[400],
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(8),
+                        bottomRight: Radius.circular(8),
                       ),
                     ),
-                  ],
-                ),
+                    child: IconButton(
+                      onPressed: authController?.name != displayName.value
+                          ? () async {
+                              final controller =
+                                  context.read(authControllerProvider.notifier);
+
+                        await controller.updateDisplayName(
+                                  displayNameController.text);
+
+                        Get.showSnackbar(GetBar(
+                                message: 'Nama berhasil diganti!',
+                                backgroundColor: Colors.green,
+                                duration: 2.seconds,
+                                animationDuration: 500.milliseconds,
+                                snackStyle: SnackStyle.FLOATING,
+                                margin: const EdgeInsets.all(8),
+                                borderRadius: 10.0,
+                              ));
+                            }
+                          : null,
+                      icon: const Icon(Icons.check),
+                    ),
+                  ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  final controller =
-                      context.read(authControllerProvider.notifier);
-                  controller.signOut();
-                },
-                child: const Text('Sign Out'),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     final controller =
+              //         context.read(authControllerProvider.notifier);
+              //     controller.signOut();
+              //   },
+              //   child: const Text('Sign Out'),
+              // ),
+              const SizedBox(height: 53),
+              Text(
+                'Silahkan\nMemasuki Room',
+                style: Get.textTheme.headline4,
               ),
+              const SizedBox(height: 17),
               ElevatedButton(
                 onPressed: () {
                   final controller =
