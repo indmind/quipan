@@ -197,21 +197,23 @@ class QuizScreen extends HookWidget {
         shadowColor: Colors.black.withOpacity(0.2),
         child: InkWell(
           borderRadius: BorderRadius.circular(999),
-          onTap: () {
-            if (controller.isCurrentQuestionAnswered) {
-              return;
-            }
+          onTap: controller.isCurrentQuestionAnswered
+              ? null
+              : () {
+                  if (controller.isCurrentQuestionAnswered) {
+                    return;
+                  }
 
-            final timeToAnswerMs =
-                DateTime.now().difference(showedAt.value!).inMilliseconds;
+                  final timeToAnswerMs =
+                      DateTime.now().difference(showedAt.value!).inMilliseconds;
 
-            controller.answer(
-              questionId: question.id,
-              optionId: option.id,
-              questionDurationMs: question.duration * 1000,
-              answerDuration: timeToAnswerMs,
-            );
-          },
+                  controller.answer(
+                    questionId: question.id,
+                    optionId: option.id,
+                    questionDurationMs: question.duration * 1000,
+                    answerDuration: timeToAnswerMs,
+                  );
+                },
           child: Container(
             padding: const EdgeInsets.all(16),
             child: Row(
