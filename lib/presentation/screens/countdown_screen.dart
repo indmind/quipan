@@ -7,13 +7,24 @@ import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
 import 'package:quizpancasila/presentation/hooks/countdown_hook.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
 import 'package:quizpancasila/presentation/screens/quiz_screen.dart';
+import 'package:quizpancasila/presentation/utils/sound_player.dart';
 
 class CountdownScreen extends HookWidget {
   const CountdownScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final countdown = useCountdown(3, disposeOnEnd: true);
+    final SoundPlayer soundPlayer = Get.find();
+
+    final countdown = useCountdown(
+      3,
+      disposeOnEnd: true,
+      onTick: (tick) => soundPlayer.playWoosh(),
+    );
+
+    useEffect(() {
+      soundPlayer.stopBGM();
+    }, []);
 
     useEffect(() {
       if (countdown.tick == 0) {

@@ -6,10 +6,16 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quizpancasila/presentation/constants/colors.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
+import 'package:quizpancasila/presentation/utils/sound_player.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  Get.put<SoundPlayer>(
+    SoundPlayerImpl(),
+    permanent: true,
+  );
 
   runApp(const ProviderScope(child: MyApp()));
 }

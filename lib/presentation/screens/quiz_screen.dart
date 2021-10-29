@@ -10,6 +10,7 @@ import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
 import 'package:quizpancasila/presentation/hooks/countdown_hook.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
 import 'package:quizpancasila/presentation/screens/leaderbord_screen.dart';
+import 'package:quizpancasila/presentation/utils/sound_player.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 
 class QuizScreen extends HookWidget {
@@ -49,6 +50,22 @@ class QuizScreen extends HookWidget {
         end: 0,
       ),
     );
+
+    useEffect(() {
+      final SoundPlayer player = Get.find();
+
+      player.startGameBGM();
+    }, []);
+
+    useEffect(() {
+      final SoundPlayer player = Get.find();
+
+      if (!controller.isCurrentQuestionAnswered &&
+          timer.tick <= 3 &&
+          timer.tick > 0) {
+        player.playWrong();
+      }
+    }, [timer.tick]);
 
     // reset the timer when the question changes
     useEffect(() {
@@ -202,6 +219,12 @@ class QuizScreen extends HookWidget {
               : () {
                   if (controller.isCurrentQuestionAnswered) {
                     return;
+                  }
+
+                  if (option.isCorrect) {
+                    Get.find<SoundPlayer>().playCorrect();
+                  } else {
+                    Get.find<SoundPlayer>().playWrong();
                   }
 
                   final timeToAnswerMs =

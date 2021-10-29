@@ -1,4 +1,5 @@
 import 'package:entry/entry.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:quizpancasila/presentation/controllers/auth_controller.dart';
 import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
 import 'package:quizpancasila/presentation/controllers/room_controller.dart';
 import 'package:quizpancasila/presentation/screens/lobby_screen.dart';
+import 'package:quizpancasila/presentation/utils/sound_player.dart';
 import 'package:quizpancasila/presentation/widgets/quiz_room_item.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
@@ -22,6 +24,12 @@ class HomeScreen extends HookWidget {
 
     final roomController = useProvider(roomControllerProvider);
     final lobbyController = useProvider(lobbyControllerProvider);
+
+    useEffect(() {
+      final SoundPlayer player = Get.find();
+
+      player.startHomeBGM();
+    }, []);
 
     useEffect(() {
       displayNameController.text = authController?.name ?? '';

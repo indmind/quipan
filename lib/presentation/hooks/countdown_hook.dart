@@ -6,19 +6,25 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 CountdownController useCountdown(
   int duration, {
   bool disposeOnEnd = false,
+  Function(int tick)? onTick,
 }) {
-  return use(_CountdownHook(duration, disposeOnEnd));
+  return use(_CountdownHook(duration, disposeOnEnd, onTick));
 }
 
 class CountdownController {
   int _tick;
+  int _duration;
+  get duration => _duration;
 
-  CountdownController(this._tick);
+  CountdownController(int duration)
+      : _duration = duration,
+        _tick = duration;
 
   int get tick => _tick;
   bool get isFinished => _tick <= 0;
 
   void reset([int? newDuration]) {
+    _duration = newDuration ?? _duration;
     _tick = newDuration ?? 0;
   }
 }
@@ -35,8 +41,9 @@ class _CountdownController extends CountdownController {
 class _CountdownHook extends Hook<CountdownController> {
   final int duration;
   final bool disposeOnEnd;
+  final Function(int tick)? onTick;
 
-  const _CountdownHook(this.duration, this.disposeOnEnd);
+  const _CountdownHook(this.duration, this.disposeOnEnd, this.onTick);
 
   @override
   __CountdownHookState createState() => __CountdownHookState();
@@ -56,6 +63,7 @@ class __CountdownHookState
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       if (_controller.tick > 0) {
         setState(() => _controller.tickDown());
+        hook.onTick?.call(_controller.tick);
       }
 
       if (hook.disposeOnEnd && _controller.tick <= 0) {

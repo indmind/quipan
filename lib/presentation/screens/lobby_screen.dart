@@ -11,6 +11,7 @@ import 'package:quizpancasila/presentation/screens/countdown_screen.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
 import 'package:quizpancasila/presentation/screens/leaderbord_screen.dart';
 import 'package:quizpancasila/presentation/screens/quiz_screen.dart';
+import 'package:quizpancasila/presentation/utils/sound_player.dart';
 import 'package:quizpancasila/presentation/widgets/participant_item.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
@@ -31,6 +32,10 @@ class LobbyScreen extends HookWidget {
 
     useEffect(() {
       Future.microtask(() => checkRoomStatus(controller));
+
+      final SoundPlayer player = Get.find();
+
+      player.startLobbyBGM();
     }, []);
 
     confirmLeaveRoom() {
