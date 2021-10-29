@@ -39,22 +39,21 @@ class QuizScreen extends HookWidget {
 
     // start next question if the timer is finished
     useEffect(() {
-      if (timer.isFinished) {
-        if (room == null) {
-          Get.off(() => const HomeScreen());
-          return;
-        }
+      if (room == null) {
+        Get.off(() => const HomeScreen());
+        return;
+      }
 
-        // check if the question has been loaded
-        if (questions.isNotEmpty) {
-          // if this is the last question, finish the game
-          if (room.currentQuestionIndex < questions.length - 1) {
-            controller.startNextQuestion();
-          } else {
-            controller.finishQuiz();
-          }
+      // check if the timer is finished and question has been loaded
+      if (timer.isFinished && questions.isNotEmpty) {
+        // if this is not the last question, go to nextQuestion
+        if (room.currentQuestionIndex < questions.length - 1) {
+          controller.startNextQuestion();
+        } else {
+          controller.finishQuiz();
         }
       }
+    // listen to timer and questions list
     }, [timer.isFinished, questions]);
 
     return Scaffold(
