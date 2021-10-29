@@ -89,8 +89,11 @@ class HomeScreen extends HookWidget {
                                   final controller = context
                                       .read(authControllerProvider.notifier);
 
+                                  Get.focusScope?.unfocus();
+
                                   await controller.updateDisplayName(
-                                      displayNameController.text);
+                                    displayNameController.text,
+                                  );
 
                                   Get.showSnackbar(GetBar(
                                     message: 'Nama berhasil diganti!',
