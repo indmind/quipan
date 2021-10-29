@@ -8,7 +8,6 @@ import 'package:quizpancasila/domain/entities/user.dart';
 import 'package:quizpancasila/domain/repositories/room_repository.dart';
 import 'package:quizpancasila/common/references.dart';
 
-
 class RoomRepositoryImpl implements RoomRepository {
   final FirebaseFirestore _firestore;
 

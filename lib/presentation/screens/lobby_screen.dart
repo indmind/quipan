@@ -146,7 +146,7 @@ class LobbyScreen extends HookWidget {
                                                 ? Colors.green
                                                 : participant.uid == user?.uid
                                                     ? Colors.blue
-                                                : kPrimaryLightColor,
+                                                    : kPrimaryLightColor,
                                         info: participant.uid == room?.hostUID
                                             ? 'Host'
                                             : participant.uid == user?.uid
