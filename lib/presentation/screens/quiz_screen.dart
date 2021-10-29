@@ -8,6 +8,7 @@ import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
 import 'package:quizpancasila/presentation/hooks/countdown_hook.dart';
 import 'package:quizpancasila/presentation/screens/home_screen.dart';
 import 'package:quizpancasila/presentation/screens/leaderbord_screen.dart';
+import 'package:rainbow_color/rainbow_color.dart';
 
 class QuizScreen extends HookWidget {
   const QuizScreen({Key? key}) : super(key: key);
@@ -29,9 +30,30 @@ class QuizScreen extends HookWidget {
     final timer = useCountdown(question?.duration ?? 0);
     final showedAt = useState<DateTime?>(null);
 
+    final progressController = useAnimationController();
+
+    final progressColorAnimation = progressController.drive(
+      RainbowColorTween([
+        Colors.green,
+        Colors.green,
+        Colors.yellow,
+        Colors.red,
+      ]),
+    );
+
+    final progressValueAnimation = progressController.drive(
+      Tween<double>(
+        begin: 1,
+        end: 0,
+      ),
+    );
+
     // reset the timer when the question changes
     useEffect(() {
       if (question != null) {
+        progressController.duration = question.duration.seconds;
+        progressController.forward(from: 0);
+
         timer.reset(question.duration);
         showedAt.value = DateTime.now();
       }
@@ -53,7 +75,7 @@ class QuizScreen extends HookWidget {
           controller.finishQuiz();
         }
       }
-    // listen to timer and questions list
+      // listen to timer and questions list
     }, [timer.isFinished, questions]);
 
     return Scaffold(
@@ -67,52 +89,67 @@ class QuizScreen extends HookWidget {
           }
         },
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("Time left: ${timer.tick}"),
-                Text(
-                  question?.question ?? 'Loading...',
-                  style: Get.theme.textTheme.headline3,
-                  textAlign: TextAlign.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(
+                        question?.question ?? 'Loading...',
+                        style: Get.theme.textTheme.headline3,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ListView.builder(
+                        itemCount: question?.options.length ?? 0,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final option = question!.options[index];
+
+                          return ListTile(
+                            title: Text(option.value),
+                            selected:
+                                controller.answers[question.id] == option.id,
+                            tileColor: controller.isCurrentQuestionAnswered
+                                ? (option.isCorrect ? Colors.green : Colors.red)
+                                : null,
+                            onTap: () {
+                              if (controller.isCurrentQuestionAnswered) {
+                                return;
+                              }
+
+                              final timeToAnswerMs = DateTime.now()
+                                  .difference(showedAt.value!)
+                                  .inMilliseconds;
+
+                              controller.answer(
+                                questionId: question.id,
+                                optionId: option.id,
+                                questionDurationMs: question.duration * 1000,
+                                answerDuration: timeToAnswerMs,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 16),
-                ListView.builder(
-                  itemCount: question?.options.length ?? 0,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    final option = question!.options[index];
-
-                    return ListTile(
-                      title: Text(option.value),
-                      selected: controller.answers[question.id] == option.id,
-                      tileColor: controller.isCurrentQuestionAnswered
-                          ? (option.isCorrect ? Colors.green : Colors.red)
-                          : null,
-                      onTap: () {
-                        if (controller.isCurrentQuestionAnswered) {
-                          return;
-                        }
-
-                        final timeToAnswerMs = DateTime.now()
-                            .difference(showedAt.value!)
-                            .inMilliseconds;
-
-                        controller.answer(
-                          questionId: question.id,
-                          optionId: option.id,
-                          questionDurationMs: question.duration * 1000,
-                          answerDuration: timeToAnswerMs,
-                        );
-                      },
-                    );
-                  },
-                )
-              ],
-            ),
+              ),
+              AnimatedBuilder(
+                animation: progressValueAnimation,
+                builder: (context, _) {
+                  return LinearProgressIndicator(
+                    value: progressValueAnimation.value,
+                    valueColor: progressColorAnimation,
+                    minHeight: 8.0,
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

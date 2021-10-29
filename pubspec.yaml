@@ -41,6 +41,7 @@ dependencies:
   google_fonts: ^2.1.0
   hooks_riverpod: ^0.14.0+5
   json_annotation: ^4.3.0
+  rainbow_color: ^2.0.1
   responsive_grid: ^2.0.0
   username_gen: ^1.0.4
 
