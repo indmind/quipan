@@ -22,7 +22,7 @@ class ParticipantItem extends StatelessWidget {
         // add soft box shadow
         boxShadow: [
           BoxShadow(
-            color: Colors.grey[300]!.withOpacity(0.5),
+            color: Colors.grey[300]!.withOpacity(0.8),
             blurRadius: 5,
             spreadRadius: 1,
             offset: const Offset(0, 1),
@@ -36,6 +36,9 @@ class ParticipantItem extends StatelessWidget {
             child: Text(
               participant.name,
               textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           if (info != null)

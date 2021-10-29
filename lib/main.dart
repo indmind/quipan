@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Quiz Pancasila',
       debugShowCheckedModeBanner: false,
+      defaultTransition: Transition.size,
       theme: ThemeData(
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: kBackgroundColor,
