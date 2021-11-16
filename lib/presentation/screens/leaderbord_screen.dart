@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:quizpancasila/presentation/controllers/auth_controller.dart';
 import 'package:quizpancasila/presentation/controllers/lobby_controller.dart';
+import 'package:quizpancasila/presentation/utils/sound_player.dart';
 
 import 'home_screen.dart';
 
@@ -16,6 +17,12 @@ class LeaderbordScreen extends HookWidget {
     final lobby = useProvider(lobbyControllerProvider);
 
     final isHost = user?.uid == lobby.current?.hostUID;
+
+    useEffect(() {
+      final SoundPlayer player = Get.find();
+
+      player.startLeaderboardBGM();
+    }, []);
 
     return Scaffold(
       body: ProviderListener<LobbyController>(

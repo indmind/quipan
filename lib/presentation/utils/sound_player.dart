@@ -17,7 +17,7 @@ class SoundPlayerImpl implements SoundPlayer {
   final _homeBgmPlayer = AudioPlayer();
   final _lobbyBgmPlayer = AudioPlayer();
   final _gameBgmPlayer = AudioPlayer();
-  // final _leaderboardBgmPlayer = AudioPlayer();
+  final _leaderboardBgmPlayer = AudioPlayer();
 
   final _wooshEffectPlayer = AudioPlayer();
   final _correctEffectPlayer = AudioPlayer();
@@ -34,7 +34,7 @@ class SoundPlayerImpl implements SoundPlayer {
       _homeBgmPlayer.setAsset('assets/audio/home.ogg'),
       _lobbyBgmPlayer.setAsset('assets/audio/lobby.ogg'),
       _gameBgmPlayer.setAsset('assets/audio/game.ogg'),
-      // _leaderboardBgmPlayer.setAsset('assets/audio/leaderboard.ogg'),
+      _leaderboardBgmPlayer.setAsset('assets/audio/leaderboard.ogg'),
       _wooshEffectPlayer.setAsset('assets/audio/woosh.ogg'),
       _correctEffectPlayer.setAsset('assets/audio/correct.ogg'),
       _wrongEffectPlayer.setAsset('assets/audio/wrong.ogg'),
@@ -54,6 +54,8 @@ class SoundPlayerImpl implements SoundPlayer {
     _lobbyBgmPlayer.seek(Duration.zero);
     _gameBgmPlayer.pause();
     _gameBgmPlayer.seek(Duration.zero);
+    _leaderboardBgmPlayer.pause();
+    _leaderboardBgmPlayer.seek(Duration.zero);
   }
 
   @override
@@ -65,6 +67,8 @@ class SoundPlayerImpl implements SoundPlayer {
     _homeBgmPlayer.seek(Duration.zero);
     _gameBgmPlayer.pause();
     _gameBgmPlayer.seek(Duration.zero);
+    _leaderboardBgmPlayer.pause();
+    _leaderboardBgmPlayer.seek(Duration.zero);
   }
 
   @override
@@ -77,13 +81,22 @@ class SoundPlayerImpl implements SoundPlayer {
     _homeBgmPlayer.seek(Duration.zero);
     _lobbyBgmPlayer.pause();
     _lobbyBgmPlayer.seek(Duration.zero);
+    _leaderboardBgmPlayer.pause();
+    _leaderboardBgmPlayer.seek(Duration.zero);
   }
 
   @override
   Future<void> startLeaderboardBGM() async {
     if (!_isLoaded) await loadAssets();
-    // TODO: implement startLeaderboardBGM
-    throw UnimplementedError();
+
+    _leaderboardBgmPlayer.seek(2.5.seconds);
+    _leaderboardBgmPlayer.play();
+    _homeBgmPlayer.pause();
+    _homeBgmPlayer.seek(Duration.zero);
+    _lobbyBgmPlayer.pause();
+    _lobbyBgmPlayer.seek(Duration.zero);
+    _gameBgmPlayer.pause();
+    _gameBgmPlayer.seek(Duration.zero);
   }
 
   @override
@@ -96,6 +109,8 @@ class SoundPlayerImpl implements SoundPlayer {
     _lobbyBgmPlayer.seek(Duration.zero);
     _gameBgmPlayer.pause();
     _gameBgmPlayer.seek(Duration.zero);
+    _leaderboardBgmPlayer.pause();
+    _leaderboardBgmPlayer.seek(Duration.zero);
   }
 
   @override
