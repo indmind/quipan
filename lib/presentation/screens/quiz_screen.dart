@@ -207,7 +207,9 @@ class QuizScreen extends HookWidget {
                 ? Colors.green[200]
                 : Colors.red[200]
             : controller.isCurrentQuestionAnswered
-                ? Colors.grey[200]
+                ? option.isCorrect
+                    ? Colors.green[200]
+                    : Colors.grey[200]
                 : Colors.yellow[200],
         borderRadius: BorderRadius.circular(999),
         elevation: 4,
